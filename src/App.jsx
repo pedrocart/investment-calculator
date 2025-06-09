@@ -1,31 +1,34 @@
-
-import Header from "./Header";
-import UserInput from "./UserInput";
 import { useState } from "react";
 
-function App() {
-    const [initialInvestment, setInitialInvestment] = useState("")
-    const [annualInvestment, setAnnualInvestment] = useState("")
-    const [expectedReturn, setExpectedReturn] = useState("")
-    const [duration, setDuration] = useState("")
+import Header from "./components/Header.jsx";
+import UserInput from "./components/UserInput.jsx";
+import Results from "./components/Results.jsx";
 
-    const handleInitialInvestmentChange = (event) => {
-        setInitialInvestment(event.target.value)
-    }
-    const handleAnnualInvestmentChange = (event) => {
-        setAnnualInvestment(event.target.value)
-    }
-    const handleExpectedReturnChange = (event) => {
-        setExpectedReturn(event.target.value)
-    }
-    const handleDurationChange = (event) => {
-        setDuration(event.target.value)
-    }
+function App() {
+  const [userInput, setUserInput] = useState({
+    initialInvestment: 10000,
+    annualInvestment: 1200,
+    expectedReturn: 6,
+    duration: 10
+  });
+
+  const inputIsValid = userInput.duration >= 1;
+
+  function handleChange(inputIdentifier, newValue) {
+    setUserInput((prevUserInput) => {
+      return {
+        ...prevUserInput,
+        [inputIdentifier]: +newValue
+      }
+    });
+  }
 
   return (
     <main>
       <Header />
-      <UserInput initialInvestment={initialInvestment} annualInvestment={annualInvestment} expectedReturn={expectedReturn} duration={duration} handleInitialInvestmentChange={handleInitialInvestmentChange} handleAnnualInvestmentChange={handleAnnualInvestmentChange} handleExpectedReturnChange={handleExpectedReturnChange} handleDurationChange={handleDurationChange}  />
+      <UserInput userInput={userInput} onChange={handleChange}/>
+      {!inputIsValid && <p className="center">Please enter a duration greater than zero.</p>}
+      {inputIsValid && <Results input={userInput}/>}
     </main>
   )
 }
